@@ -8,24 +8,12 @@ dotenv.config();
 
 const app = express();
 
-// 1. DYNAMIC CORS SETTINGS
-// This allows your local testing AND your future live website to talk to the server
-const allowedOrigins = [
-    "http://localhost:3000",
-    process.env.FRONTEND_URL // We will add your Vercel URL here later
-];
-
+// 1. SIMPLIFIED CORS SETTINGS
+// This allows all origins (including your Vercel link) to talk to the server
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -35,7 +23,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ MongoDB Connected: ReadStack Database is Live'))
     .catch(err => console.error('❌ Database Connection Error:', err));
 
-// 3. ROUTES (Defined before the server starts)
+// 3. ROUTES
 const authRoute = require('./routes/auth');
 const recommendationRoute = require('./routes/recommendations');
 const bookRoute = require('./routes/books');
