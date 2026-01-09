@@ -1,21 +1,17 @@
 import axios from 'axios';
 
-// This logic automatically detects if you are running locally or on the web
-const isProduction = window.location.hostname !== 'localhost';
-
 const API = axios.create({
-    baseURL: isProduction 
-        ? 'https://your-backend-name.onrender.com/api'  // We will update this soon
-        : 'http://localhost:5000/api'
+    // Replace the old localhost URL with your new Render URL
+    baseURL: 'https://readstack-onv6.onrender.com/api', 
 });
 
-// This automatically attaches your token to every request so you don't have to
-API.interceptors.request.use((config) => {
+// This part keeps your user logged in by sending the token automatically
+API.interceptors.request.use((req) => {
     const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        req.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
+    return req;
 });
 
 export default API;
